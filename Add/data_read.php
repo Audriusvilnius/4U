@@ -8,7 +8,17 @@ $dbname = '4u';
 $sql = new mysqli($servername, $username, $password, $dbname);
 
 // Random topic
-$topic_rnd = $sql->query(" SELECT * FROM content WHERE id = '" . rand(1, 10) . "' ORDER BY id DESC ");
+
+$id = $sql->query(" SELECT * FROM content ORDER BY id DESC ");
+foreach ($id as $key => $row) {
+    $random_id[$key] = $row['id'];
+}
+$length = count($random_id);
+$topic_rnd = rand(1, $length);
+$topic_id = $sql->query(" SELECT * FROM content WHERE id = '" . $random_id[$topic_rnd] . "' ORDER BY id DESC ");
+
+
+$topic_rnd = $sql->query(" SELECT * FROM content WHERE id = '" . rand(1, $length) . "' ORDER BY id DESC ");
 $length = $sql->query("SELECT COUNT(*) FROM content");
 $length = $length->fetch_assoc();
 $length = $length['COUNT(*)'];
@@ -16,6 +26,7 @@ $length = $length['COUNT(*)'];
 while ($row = $topic_rnd->fetch_assoc()) {
     echo '<h2>' . $row['title'] . '</h2><br>';
     echo $row['user_content'];
+
 }
 
 // All topic
@@ -75,28 +86,27 @@ echo '<form method="post" action="">
     </div>
 </form>';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Assuming 'your_table_name' is the name of your table
-    //$table_name = $wpdb->prefix . 'your_table_name';
-    $table_name = 'content';
-    // Assuming 'id' is the primary key for your table
-    $id_to_delete = sanitize_text_field($_POST['id']);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['id'] != '') {
+    if (isset($_POST['id'])) {
+        // Assuming 'your_table_name' is the name of your table
+        //$table_name = $wpdb->prefix . 'your_table_name';
+        $table_name = 'content';
+        // Assuming 'id' is the primary key for your table
+        $id_to_delete = sanitize_text_field($_POST['id']);
 
-    $wpdb->delete(
-        $table_name,
-        array('id' => $id_to_delete),
-        array('%d') // %d represents the format of the ID, adjust accordingly
-    );
+        $wpdb->delete(
+            $table_name,
+            array('id' => $id_to_delete),
+            array('%d') // %d represents the format of the ID, adjust accordingly
+        );
 
-    if ($wpdb->last_error) {
-        echo 'Error deleting data: ' . $wpdb->last_error;
-    } else {
-        echo '<h3 style="background-color: rgba(0, 255, 0, 0.585); padding: 15px;border-radius: 10px;text-align: center;">Data deleted successfully!</h3>';
+        if ($wpdb->last_error) {
+            echo 'Error deleting data: ' . $wpdb->last_error;
+        } else {
+            echo '<h3 style="background-color: rgba(0, 255, 0, 0.585); padding: 15px;border-radius: 10px;text-align: center;">Data deleted successfully!</h3>';
+        }
+        header('Location: http://localhost/4U/index.php');
     }
 }
-
-
-
-
 
 ?>
