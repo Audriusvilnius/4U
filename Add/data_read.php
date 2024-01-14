@@ -6,6 +6,8 @@ $password = '1234567';
 $dbname = '4u';
 
 $sql = new mysqli($servername, $username, $password, $dbname);
+
+// Random topic
 $topic_rnd = $sql->query(" SELECT * FROM content WHERE id = '" . rand(1, 10) . "' ORDER BY id DESC ");
 $length = $sql->query("SELECT COUNT(*) FROM content");
 $length = $length->fetch_assoc();
@@ -16,34 +18,28 @@ while ($row = $topic_rnd->fetch_assoc()) {
     echo $row['user_content'];
 }
 
+// All topic
 $topics = $sql->query(" SELECT * FROM content ORDER BY id DESC ");
 while ($row = $topics->fetch_assoc()) {
-    echo '<h2>' . $row['title'] . '</h2><br>';
-    echo $row['user_content'];
+    echo '<h2 style="text-align: center;">' . $row['title'] . '</h2><br>';
+    echo $row['user_content'] . '<br>';
+    echo '<p style="text-align: right;">Author: <i><b>' . $row['author'] . $row['id'] . '</i></b></p><hr><br><br>.';
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title = $_POST['title'];
-    $content = $_POST['user_content'];
-    $sql->query("INSERT INTO content (title, user_content) VALUES ('$title', '$content')");
-    header('Location: index.php');
-}
-
+// Path: Add/data_read.php
 global $wpdb;
-
 echo '<form method="post" action="">
     <div style="margin-bottom: 25px;margin-top: 25px;">
-        <input type="text" name="title" placeholder="Topic"><br>
+        <input type="text" name="title" placeholder="Topic" style="border-radius: 7px;"><br>
     </div>
     <div>
-        <textarea type="text" name="user_content" placeholder="Topic Content" "></textarea>
+        <textarea type="text" name="user_content" placeholder="Write content here ..." " style="border-radius: 7px;"></textarea>
     </div>
-    <div style="margin-bottom: 25px;margin-top: 25px;">
-        <input type="text" name="author" placeholder="Author"><br>
+    <div style="margin-bottom: 15px;margin-top: 15px; width: 400px;float:right;">
+        <input type="text" name="author" placeholder="Author" style="border-radius: 7px;"><br>
+        <button style="margin-bottom: 15px;margin-top: 15px;float:right;" type="submit" >Add Topic</button>
     </div>
-        <button type="submit" >Add Topic</button>
-</form><br><br>';
-
+</form><br><br><br><br><br><hr>';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (($_POST['title'] != '') && $_POST['user_content'] != '' && $_POST['author'] != '') {
@@ -62,10 +58,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($wpdb->last_error) {
             echo 'Error inserting data: ' . $wpdb->last_error;
         } else {
-            echo '<h3 style="color: skyblue;background-color: lime; padding: 15px;border-radius: 10px;text-align: center;">Data inserted successfully!</h3>';
+            echo '<h3 style="background-color: rgba(0, 255, 0, 0.585); padding: 15px;border-radius: 10px;text-align: center;">Data inserted successfully!</h3>';
         }
     } else {
-        echo '<h3 style="color: crimson;background-color: skyblue; padding: 15px;border-radius: 10px;text-align: center;">Please fill all the fields</h3>';
+        echo '<h3 style="color: crimson;background-color: skyblue; padding: 15px;border-radius: 10px;text-align: center;">Please fill all the fields!</h3>';
     }
 }
+
+// Path: delete/data_read.php
+global $wpdb;
+
+echo '<form method="post" action="">
+        <input type="hidden" name="id" value = ' . $row['id'] . '"><br>
+    <div>
+        <button style="margin-bottom: 15px;margin-top: 15px;float:right; background-color:crimson" type="submit" >Delete</button>
+    </div>
+</form>';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Assuming 'your_table_name' is the name of your table
+    //$table_name = $wpdb->prefix . 'your_table_name';
+    $table_name = 'content';
+    // Assuming 'id' is the primary key for your table
+    $id_to_delete = sanitize_text_field($_POST['id']);
+
+    $wpdb->delete(
+        $table_name,
+        array('id' => $id_to_delete),
+        array('%d') // %d represents the format of the ID, adjust accordingly
+    );
+
+    if ($wpdb->last_error) {
+        echo 'Error deleting data: ' . $wpdb->last_error;
+    } else {
+        echo '<h3 style="background-color: rgba(0, 255, 0, 0.585); padding: 15px;border-radius: 10px;text-align: center;">Data deleted successfully!</h3>';
+    }
+}
+
+
+
+
+
 ?>
