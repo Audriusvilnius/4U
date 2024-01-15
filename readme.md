@@ -18,7 +18,7 @@ Pilotinės suprogramuotų funkcijų demonstravimo svetainės WordPress pagrindu 
 
 # Duomenų bazės prisijungimas:
 DB vartotojo vardas: 4u
-DB vartotojo slaptazodis: ```1234567```
+DB vartotojo slaptazodis: 1234567
 
 # Administratoriaus prisijungimas:
 Vartotojo vardas: Audrius
