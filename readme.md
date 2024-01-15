@@ -13,8 +13,7 @@ Pilotinės suprogramuotų funkcijų demonstravimo svetainės WordPress pagrindu 
 ## Naudojimas
 
 ```php
-# Duomenų baze:
-...db/4u.sql
+# Duomenų baze: db/4u.sql
 
 # Duomenų bazės prisijungimas:
 DB vartotojo vardas: 4u
