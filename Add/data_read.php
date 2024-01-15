@@ -9,24 +9,22 @@ $sql = new mysqli($servername, $username, $password, $dbname);
 
 // Random topic
 
+$length = $sql->query("SELECT COUNT(*) FROM content");
+$length = $length->fetch_assoc();
+$length = $length['COUNT(*)'];
+
+
 $id = $sql->query(" SELECT * FROM content ORDER BY id DESC ");
 foreach ($id as $key => $row) {
     $random_id[$key] = $row['id'];
 }
 $length = count($random_id);
-$topic_rnd = rand(1, $length);
+$topic_rnd = rand(0, $length - 1);
 $topic_id = $sql->query(" SELECT * FROM content WHERE id = '" . $random_id[$topic_rnd] . "' ORDER BY id DESC ");
-
-
-$topic_rnd = $sql->query(" SELECT * FROM content WHERE id = '" . rand(1, $length) . "' ORDER BY id DESC ");
-$length = $sql->query("SELECT COUNT(*) FROM content");
-$length = $length->fetch_assoc();
-$length = $length['COUNT(*)'];
-
-while ($row = $topic_rnd->fetch_assoc()) {
+while ($row = $topic_id->fetch_assoc()) {
     echo '<h2>' . $row['title'] . '</h2><br>';
-    echo $row['user_content'];
-
+    echo $row['user_content'] . '<br>';
+    echo ' <small style="float:right;color:black;"><i>id: ' . $row['id'] . '</i></small><br>';
 }
 
 // All topic
