@@ -14,11 +14,11 @@ Pilotinės suprogramuotų funkcijų demonstravimo svetainės WordPress pagrindu 
 
 ```php
 # Duomenų baze:
-./4U/db/4u.sql
+...db/4u.sql
 
 # Duomenų bazės prisijungimas:
 DB vartotojo vardas: 4u
-DB vartotojo slaptazodis: 1234567
+DB vartotojo slaptazodis: ```1234567```
 
 # Administratoriaus prisijungimas:
 Vartotojo vardas: Audrius
