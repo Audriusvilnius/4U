@@ -58,7 +58,7 @@ echo '<form method="post" action="">
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (($_POST['title'] != '') && $_POST['user_content'] != '' && $_POST['author'] != '') {
         // Assuming 'your_table_name' is the name of your table
-        // $table_name = $wpdb->prefix . 'content';
+        // $table_name = $wpdb->prefix . 'content'; 
         $table_name = 'content';
         // Sanitize and validate your form data (to prevent SQL injection and other security issues)
         $data = array(
