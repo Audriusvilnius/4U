@@ -8,6 +8,11 @@ $dbname = '4u';
 $sql = new mysqli($servername, $username, $password, $dbname);
 
 // Random topic
+global $wpdb;
+$id = $wpdb->get_results("SELECT * FROM content");
+foreach ($id as $key => $row) {
+    $random_id[$key] = $row->id;
+}
 
 $length = $sql->query("SELECT COUNT(*) FROM content");
 $length = $length->fetch_assoc();
@@ -107,4 +112,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['id'] != '') {
     }
 }
 
-?>
+
+$posts = $wpdb->get_results("SELECT * FROM content ORDER BY id DESC ");
+foreach ($posts as $post) {
+    echo '<h2 style="text-align: center;">' . $post->title . '</h2><br>';
+    echo $post->user_content . '<br>';
+    echo '<p style="text-align: right;">Author: <i><b>' . $post->author . '</b></i><br><small><i>Topic ID: ' . $post->id . '</small></i>';
+    echo '<form method="post"  action="">
+        <input type="hidden" name="id" value = ' . $post->id . '><br>
+    <div>
+        <button style="float:right; background-color:crimson" type="submit" >Delete Topic</button>
+    </div>
+</form><br><br><br><hr>';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['id'] != '') {
+        $table_name = 'content';
+        $id_to_delete = sanitize_text_field($_POST['id']);
+        $wpdb->delete(
+            $table_name,
+            array('id' => $id_to_delete),
+            array('%d') // %d represents the format of the ID, adjust accordingly
+        );
+    }
+}
+
+
+
+global $wpdb;
+$id = $wpdb->get_results("SELECT * FROM content");
+foreach ($id as $key => $row) {
+    $random_id[$key] = $row->id;
+}
+$length = count($random_id);
+$topic_rnd = rand(0, $length - 1);
+$topic_id = $wpdb->get_results(" SELECT * FROM content WHERE id = '" . $random_id[$topic_rnd] . "' ORDER BY id DESC ");
+foreach ($topic_id as $row) {
+    echo '<h2>' . $row->title . '</h2><br>';
+    echo $row->user_content . '<br>';
+    echo ' <small style="float:right;color:black;"><i>id: ' . $row->id . '</i></small><br>';
+}
